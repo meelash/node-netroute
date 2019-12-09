@@ -50,7 +50,7 @@ void Hex2Bin(char* buf, unsigned int len) {
 }
 
 
-static bool GetRoutesIPv4(Handle<Array> routes) {
+static bool GetRoutesIPv4(Local<Array> routes) {
   FILE* fp = fopen("/proc/net/route", "r");
   if (fp == NULL) return false;
 
@@ -89,22 +89,22 @@ static bool GetRoutesIPv4(Handle<Array> routes) {
 
     char buf[256];
     Local<Object> route = Nan::New<Object>();
-    route->Set(Nan::New<String>("interface").ToLocalChecked(),
-               Nan::New<String>(iface).ToLocalChecked());
-    route->Set(Nan::New<String>("destination").ToLocalChecked(),
-               Nan::New<String>(inet_ntop(AF_INET, &dst, buf, sizeof(buf))).ToLocalChecked());
-    route->Set(Nan::New<String>("gateway").ToLocalChecked(),
-               Nan::New<String>(inet_ntop(AF_INET, &gateway, buf, sizeof(buf))).ToLocalChecked());
-    route->Set(Nan::New<String>("flags").ToLocalChecked(), Nan::New<Int32>(flags));
-    route->Set(Nan::New<String>("refcnt").ToLocalChecked(), Nan::New<Int32>(refcnt));
-    route->Set(Nan::New<String>("use").ToLocalChecked(), Nan::New<Int32>(use));
-    route->Set(Nan::New<String>("metric").ToLocalChecked(), Nan::New<Int32>(metric));
-    route->Set(Nan::New<String>("netmask").ToLocalChecked(),
-               Nan::New<String>(inet_ntop(AF_INET, &mask, buf, sizeof(buf))).ToLocalChecked());
-    route->Set(Nan::New<String>("mtu").ToLocalChecked(), Nan::New<Int32>(mtu));
-    route->Set(Nan::New<String>("window").ToLocalChecked(), Nan::New<Int32>(window));
-    route->Set(Nan::New<String>("rtt").ToLocalChecked(), Nan::New<Int32>(rtt));
-    routes->Set(routes->Length(), route);
+    Nan::Set(route, Nan::New<String>("interface").ToLocalChecked(),
+                    Nan::New<String>(iface).ToLocalChecked());
+    Nan::Set(route, Nan::New<String>("destination").ToLocalChecked(),
+                    Nan::New<String>(inet_ntop(AF_INET, &dst, buf, sizeof(buf))).ToLocalChecked());
+    Nan::Set(route, Nan::New<String>("gateway").ToLocalChecked(),
+                    Nan::New<String>(inet_ntop(AF_INET, &gateway, buf, sizeof(buf))).ToLocalChecked());
+    Nan::Set(route, Nan::New<String>("flags").ToLocalChecked(), Nan::New<Int32>(flags));
+    Nan::Set(route, Nan::New<String>("refcnt").ToLocalChecked(), Nan::New<Int32>(refcnt));
+    Nan::Set(route, Nan::New<String>("use").ToLocalChecked(), Nan::New<Int32>(use));
+    Nan::Set(route, Nan::New<String>("metric").ToLocalChecked(), Nan::New<Int32>(metric));
+    Nan::Set(route, Nan::New<String>("netmask").ToLocalChecked(),
+                    Nan::New<String>(inet_ntop(AF_INET, &mask, buf, sizeof(buf))).ToLocalChecked());
+    Nan::Set(route, Nan::New<String>("mtu").ToLocalChecked(), Nan::New<Int32>(mtu));
+    Nan::Set(route, Nan::New<String>("window").ToLocalChecked(), Nan::New<Int32>(window));
+    Nan::Set(route, Nan::New<String>("rtt").ToLocalChecked(), Nan::New<Int32>(rtt));
+    Nan::Set(routes, routes->Length(), route);
   }
 
   fclose(fp);
@@ -113,7 +113,7 @@ static bool GetRoutesIPv4(Handle<Array> routes) {
 }
 
 
-static bool GetRoutesIPv6(Handle<Array> routes) {
+static bool GetRoutesIPv6(Local<Array> routes) {
   FILE* fp = fopen("/proc/net/ipv6_route", "r");
   if (fp == NULL) return false;
 
@@ -157,16 +157,16 @@ static bool GetRoutesIPv6(Handle<Array> routes) {
     snprintf(gateway, sizeof(gateway), "%s", buf);
 
     Local<Object> route = Nan::New<Object>();
-    route->Set(Nan::New<String>("destination").ToLocalChecked(), Nan::New<String>(dst).ToLocalChecked());
-    route->Set(Nan::New<String>("source").ToLocalChecked(), Nan::New<String>(src).ToLocalChecked());
-    route->Set(Nan::New<String>("gateway").ToLocalChecked(), Nan::New<String>(gateway).ToLocalChecked());
-    route->Set(Nan::New<String>("metric").ToLocalChecked(), Nan::New<Int32>(metric));
-    route->Set(Nan::New<String>("refcnt").ToLocalChecked(), Nan::New<Int32>(refcnt));
-    route->Set(Nan::New<String>("use").ToLocalChecked(), Nan::New<Int32>(use));
-    route->Set(Nan::New<String>("flags").ToLocalChecked(), Nan::New<Int32>(flags));
-    route->Set(Nan::New<String>("interface").ToLocalChecked(),
-               Nan::New<String>(iface).ToLocalChecked());
-    routes->Set(routes->Length(), route);
+    Nan::Set(route, Nan::New<String>("destination").ToLocalChecked(), Nan::New<String>(dst).ToLocalChecked());
+    Nan::Set(route, Nan::New<String>("source").ToLocalChecked(), Nan::New<String>(src).ToLocalChecked());
+    Nan::Set(route, Nan::New<String>("gateway").ToLocalChecked(), Nan::New<String>(gateway).ToLocalChecked());
+    Nan::Set(route, Nan::New<String>("metric").ToLocalChecked(), Nan::New<Int32>(metric));
+    Nan::Set(route, Nan::New<String>("refcnt").ToLocalChecked(), Nan::New<Int32>(refcnt));
+    Nan::Set(route, Nan::New<String>("use").ToLocalChecked(), Nan::New<Int32>(use));
+    Nan::Set(route, Nan::New<String>("flags").ToLocalChecked(), Nan::New<Int32>(flags));
+    Nan::Set(route, Nan::New<String>("interface").ToLocalChecked(),
+                    Nan::New<String>(iface).ToLocalChecked());
+    Nan::Set(routes, routes->Length(), route);
   }
 
   fclose(fp);
@@ -175,7 +175,7 @@ static bool GetRoutesIPv6(Handle<Array> routes) {
 }
 
 
-bool GetInfo(int family, Handle<Array> result) {
+bool GetInfo(int family, Local<Array> result) {
   if (family == AF_INET) return GetRoutesIPv4(result);
   if (family == AF_INET6) return GetRoutesIPv6(result);
   abort();
